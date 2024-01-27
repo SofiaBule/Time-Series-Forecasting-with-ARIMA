@@ -1,0 +1,27 @@
+from statsmodels.tsa.arima.model import ARIMA
+
+# Generate synthetic weather data for demonstration
+np.random.seed(42)
+days = 30
+dates = [datetime(2024, 1, 1) + timedelta(days=i) for i in range(days)]
+temperatures = np.random.randint(0, 30, days)
+
+# Create a Series for ARIMA
+data = pd.Series(temperatures, index=dates)
+
+# Create and fit the ARIMA model
+model = ARIMA(data, order=(1, 1, 1))
+fit_model = model.fit()
+
+# Make predictions for the next 7 days
+future_dates = pd.date_range(start=dates[-1] + timedelta(days=1), periods=7)
+future_predictions = fit_model.get_forecast(steps=7).predicted_mean
+
+# Plot the results
+plt.plot(dates, temperatures, label="Actual Temperatures")
+plt.plot(future_dates, future_predictions, label="Predicted Temperatures (Next 7 Days - ARIMA)")
+plt.xlabel("Date")
+plt.ylabel("Temperature (°C)")
+plt.title("Weather Prediction for the Next 7 Days (ARIMA)")
+plt.legend()
+plt.show()
